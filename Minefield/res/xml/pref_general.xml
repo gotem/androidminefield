@@ -1,0 +1,17 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+
+    <!--
+         NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
+         dismiss it.
+    -->
+    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+    <EditTextPreference android:key="maxDistance" android:title="Max Distance" android:defaultValue="500"/>
+    <EditTextPreference android:key="triggerRadius" android:defaultValue="10" android:title="Trigger Radius"/>
+    <EditTextPreference android:key="warnRadius" android:defaultValue="20" android:title="Warn Radius"/>
+    <EditTextPreference android:key="numberMines" android:defaultValue="10" android:title="Number of Mines"/>
+    <EditTextPreference android:key="numberPrizes" android:defaultValue="5" android:title="Number of Prizes"/>
+
+</PreferenceScreen>
