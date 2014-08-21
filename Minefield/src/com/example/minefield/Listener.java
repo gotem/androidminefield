@@ -26,8 +26,31 @@ public class Listener implements LocationListener
     		initialized = true;
     		Initialize(location);
     	}
-      // Called when a new location is found by the network location provider.
-      //makeUseOfNewLocation(location);
+    	for (Mine mine : mines)
+    	{
+    		Double distance = mine.DistanceTo(location);
+    	    if (distance <= params.warnRadius && mine.isNear == false )
+    	    {
+    	    	//warn is near
+    	    	Warn(mine);
+    	    }
+    	    if (distance <= params.triggerRadius && mine.isTriggered == false )
+    	    {
+    	    	Trigger(mine);
+    	    }
+    	}
+    	for (Mine mine : prizes)
+    	{
+    		Double distance = mine.DistanceTo(location);
+    	    if (distance <= params.warnRadius && mine.isNear == false )
+    	    {
+    	    	Warn(mine);
+    	    }
+    	    if (distance <= params.triggerRadius && mine.isTriggered == false )
+    	    {
+    	    	Trigger(mine);
+    	    }
+    	}
     }
 
     private void Initialize(Location location)
@@ -46,6 +69,18 @@ public class Listener implements LocationListener
     			   Toast.makeText(service.getApplicationContext(), "Location Initialized", Toast.LENGTH_SHORT).show();
     		   }
     		});
+    }
+    
+    private void Warn(Mine mine)
+    {
+    	mine.isNear = true;
+    	service.Warn(mine.value);
+    }
+    
+    private void Trigger(Mine mine)
+    {
+    	mine.isTriggered = true;
+    	service.Trigger(mine.value);
     }
     
     public void onStatusChanged(String provider, int status, Bundle extras) {}

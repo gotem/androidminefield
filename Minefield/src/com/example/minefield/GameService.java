@@ -14,16 +14,29 @@ import android.widget.Toast;
 public class GameService extends IntentService {
 
 	private static final int ONGOING_NOTIFICATION_ID = 1;
+	public static final String BROADCAST_ACTION = "com.example.minefield.status";
 	public Handler handler;
+	private Intent intent;
+	private Integer traps;
+	private Integer prizes;
+	private Boolean initialized;
+	
+	
 	public GameService() {
 		super("GameService");
 		// TODO Auto-generated constructor stub
+		traps = 0;
+		prizes = 0;
+		initialized = false;
 	}
 
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 	   handler = new Handler();
+	   intent = new Intent(BROADCAST_ACTION);
+	   handler.removeCallbacks(UpdateStatus);
+       handler.postDelayed(UpdateStatus, 1000); // 1 second   
 	   return super.onStartCommand(intent, flags, startId);
 	}
 	/**
@@ -61,5 +74,29 @@ public class GameService extends IntentService {
 			LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new Listener(this));
 		}
+		
+		public void Warn(Integer value)
+		{
+			
+		}
 
+		public void Trigger(Integer value)
+		{
+			
+		}
+		
+		private Runnable UpdateStatus = new Runnable() {
+	        public void run() {
+	            Status();            
+	            handler.postDelayed(this, 5000); // 5 seconds
+	        }
+	    };  
+		
+	    public void Status()
+	    {
+	        intent.putExtra("traps", traps);
+	        intent.putExtra("prizes", prizes);
+	        intent.putExtra("initializes", initialized);
+	        sendBroadcast(intent);
+	    }
 }

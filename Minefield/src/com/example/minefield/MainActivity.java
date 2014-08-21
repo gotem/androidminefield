@@ -5,8 +5,10 @@ import android.app.ActionBar;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -54,6 +56,25 @@ public class MainActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	  @Override
+	    public void onResume() {
+	        super.onResume();        
+	        registerReceiver(broadcastReceiver, new IntentFilter(GameService.BROADCAST_ACTION));
+	    }
+	    
+	    @Override
+	    public void onPause() {
+	        super.onPause();
+	        unregisterReceiver(broadcastReceiver);     
+	    }
+	
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            UpdateStatus(intent);      
+        }
+    };    
+	
 	private boolean isMyServiceRunning(Class<?> serviceClass) {
 	    ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -63,6 +84,20 @@ public class MainActivity extends Activity {
 	    }
 	    return false;
 	}
+	
+	private void UpdateStatus(Intent intent)
+	{
+		String text="";
+		if(intent.getBooleanExtra("initialized", false))
+		{
+			text ="Game Initialized\n";
+			text += intent.getStringExtra("traps")+" traps triggered";
+			text += intent.getStringExtra("traps")+" prizes found";
+		
+		}
+		((android.widget.TextView)findViewById(R.id.gameView)).setText(text);
+	}
+	
 	//isMyServiceRunning(GameService.class)
 	/**
 	 * A placeholder fragment containing a simple view.
