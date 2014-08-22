@@ -1,11 +1,15 @@
 package com.example.minefield;
 
+import java.util.Date;
+
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Handler;
 import android.os.IBinder;
@@ -16,10 +20,11 @@ public class GameService extends IntentService {
 	private static final int ONGOING_NOTIFICATION_ID = 1;
 	public static final String BROADCAST_ACTION = "com.example.minefield.status";
 	public Handler handler;
-	private Intent intent;
+	private Intent broadcastintent;
 	private Integer traps;
 	private Integer prizes;
 	private Boolean initialized;
+	private Listener listener;
 	
 	
 	public GameService() {
@@ -34,7 +39,7 @@ public class GameService extends IntentService {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 	   handler = new Handler();
-	   intent = new Intent(BROADCAST_ACTION);
+	   broadcastintent = new Intent(BROADCAST_ACTION);
 	   handler.removeCallbacks(UpdateStatus);
        handler.postDelayed(UpdateStatus, 1000); // 1 second   
 	   return super.onStartCommand(intent, flags, startId);
@@ -71,8 +76,20 @@ public class GameService extends IntentService {
 	  
 		public void startMonitoring()
 		{
+			listener = new Listener(this);
 			LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new Listener(this));
+			/*Criteria criteria = new Criteria();
+			criteria.setAccuracy(Criteria.ACCURACY_FINE);
+			locationManager.requestLocationUpdates(0L,0f,criteria,listener,null);*/
+			Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			if(loc!=null)
+			{
+				if(loc.getTime() > (new Date().getTime() - 1000*2*60)) //2Minutes back
+				{
+					listener.Initialize(loc);
+				}
+			}
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
 		}
 		
 		public void Warn(Integer value)
@@ -85,6 +102,11 @@ public class GameService extends IntentService {
 			
 		}
 		
+		public void SetInitialized()
+		{
+			initialized = true;
+		}
+		
 		private Runnable UpdateStatus = new Runnable() {
 	        public void run() {
 	            Status();            
@@ -94,9 +116,9 @@ public class GameService extends IntentService {
 		
 	    public void Status()
 	    {
-	        intent.putExtra("traps", traps);
-	        intent.putExtra("prizes", prizes);
-	        intent.putExtra("initializes", initialized);
-	        sendBroadcast(intent);
+	        broadcastintent.putExtra("traps", traps);
+	        broadcastintent.putExtra("prizes", prizes);
+	        broadcastintent.putExtra("initializes", initialized);
+	        sendBroadcast(broadcastintent);
 	    }
 }

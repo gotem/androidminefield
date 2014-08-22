@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.location.*;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 public class Listener implements LocationListener
@@ -17,10 +18,13 @@ public class Listener implements LocationListener
 	
 	public Listener(GameService p_service)
 	{
+		Log.d("MineField","listener created");
 		service = p_service;
+		initialized = false;
 	}
 	
     public void onLocationChanged(Location location) {
+		Log.d("MineField","location changed");
     	if(!initialized)
     	{
     		initialized = true;
@@ -53,22 +57,24 @@ public class Listener implements LocationListener
     	}
     }
 
-    private void Initialize(Location location)
+    public void Initialize(Location location)
     {
+    	Log.d("MineField","center "+location.getLatitude()+" "+location.getLongitude());
     	for(int i = 0;i<params.numberMines;i++)
     	{
-    		mines.add( new Mine(1,params,location));
+    		mines.add( new Mine(1,params,location)); 		
     	}
     	for(int i = 0;i<params.numberPrizes;i++)
     	{
     		prizes.add( new Mine(0,params,location));
     	}
-    	service.handler.post(new Runnable() {
+    	service.SetInitialized();
+    	/*service.handler.post(new Runnable() {
     		   @Override
     		   public void run() {
     			   Toast.makeText(service.getApplicationContext(), "Location Initialized", Toast.LENGTH_SHORT).show();
     		   }
-    		});
+    		});*/
     }
     
     private void Warn(Mine mine)
@@ -83,10 +89,19 @@ public class Listener implements LocationListener
     	service.Trigger(mine.value);
     }
     
-    public void onStatusChanged(String provider, int status, Bundle extras) {}
+    public void onStatusChanged(String provider, int status, Bundle extras) 
+    {
+    	Log.d("MineField","status changed");
+    }
 
-    public void onProviderEnabled(String provider) {}
+    public void onProviderEnabled(String provider) 
+    {
+    	Log.d("MineField","provider enabled");
+    }
 
-    public void onProviderDisabled(String provider) {}
+    public void onProviderDisabled(String provider) 
+    {
+    	Log.d("MineField","provider disabled");
+    }
 
   };

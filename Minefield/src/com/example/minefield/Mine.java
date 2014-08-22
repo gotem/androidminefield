@@ -1,6 +1,7 @@
 package com.example.minefield;
 
 import android.location.Location;
+import android.util.Log;
 
 public class Mine {
 
@@ -21,6 +22,8 @@ public class Mine {
 		Double longdistance = (Math.random()*p_params.maxDistance*2)-p_params.maxDistance;
 		location.setLatitude(p_centerlocation.getLatitude() + (latdistance/latmeters));
 		location.setLongitude(p_centerlocation.getLongitude() + (longdistance/longmeters));
+    	Log.d("MineField","mine value:"+value+" "+location.getLatitude()+" "+location.getLongitude());
+
 	}
 	
 	public Double DistanceTo(Location p_location)

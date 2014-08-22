@@ -95,6 +95,8 @@ public class MainActivity extends Activity {
 			text += intent.getStringExtra("traps")+" prizes found";
 		
 		}
+		else
+			text ="Waiting for GPS to settle, don't move yet!";
 		((android.widget.TextView)findViewById(R.id.gameView)).setText(text);
 	}
 	
