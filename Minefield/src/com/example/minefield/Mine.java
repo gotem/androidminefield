@@ -1,6 +1,7 @@
 package com.example.minefield;
 
 import android.location.Location;
+import android.location.LocationManager;
 import android.util.Log;
 
 public class Mine {
@@ -18,6 +19,7 @@ public class Mine {
 		this.value = p_val;
 		this.isNear = false;
 		this.isTriggered = false;
+		this.location = new Location(LocationManager.GPS_PROVIDER);
 		Double latdistance = (Math.random()*p_params.maxDistance*2)-p_params.maxDistance;
 		Double longdistance = (Math.random()*p_params.maxDistance*2)-p_params.maxDistance;
 		location.setLatitude(p_centerlocation.getLatitude() + (latdistance/latmeters));

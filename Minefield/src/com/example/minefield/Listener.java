@@ -21,6 +21,7 @@ public class Listener implements LocationListener
 		Log.d("MineField","listener created");
 		service = p_service;
 		initialized = false;
+		params = service.params;
 	}
 	
     public void onLocationChanged(Location location) {
@@ -60,6 +61,8 @@ public class Listener implements LocationListener
     public void Initialize(Location location)
     {
     	Log.d("MineField","center "+location.getLatitude()+" "+location.getLongitude());
+    	mines = new ArrayList<Mine>();
+    	prizes = new ArrayList<Mine>();
     	for(int i = 0;i<params.numberMines;i++)
     	{
     		mines.add( new Mine(1,params,location)); 		

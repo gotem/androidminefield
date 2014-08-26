@@ -1,9 +1,12 @@
 package com.example.minefield;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 
-public class MineParams {
+public class MineParams implements Parcelable{
 
 	float maxDistance;
 	float triggerRadius;
@@ -11,14 +14,53 @@ public class MineParams {
 	Integer numberMines;
 	Integer numberPrizes;
 	
-	public MineParams(GameService service) {
+	public MineParams(Context ctx) {
 		// TODO Auto-generated constructor stub
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(service);
-		maxDistance = Float.parseFloat(sharedPref.getString("maxDistance", "0"));
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ctx);
+		maxDistance = Float.parseFloat(sharedPref.getString("maxDistance", "500"));
 		triggerRadius = Float.parseFloat(sharedPref.getString("triggerRadius", "5"));
 		warnRadius = Float.parseFloat(sharedPref.getString("warnRadius", "10"));
-		numberMines = sharedPref.getInt("numberMines", 1);
-		numberPrizes = sharedPref.getInt("numberPrizes", 0);
+		numberMines = Integer.parseInt(sharedPref.getString("numberMines", "1"));
+		numberPrizes = Integer.parseInt(sharedPref.getString("numberPrizes", "0"));
 	}
 
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		// TODO Auto-generated method stub
+		dest.writeFloat(maxDistance);
+		dest.writeFloat(triggerRadius);
+		dest.writeFloat(warnRadius);
+		dest.writeInt(numberMines);
+		dest.writeInt(numberPrizes);
+	}
+
+	public MineParams(Parcel in)
+	{
+		maxDistance = in.readFloat();
+		triggerRadius = in.readFloat();
+		warnRadius = in.readFloat();
+		numberMines = in.readInt();
+		numberPrizes = in.readInt();
+
+	}
+	
+    public static final Parcelable.Creator<MineParams> CREATOR = new Parcelable.Creator<MineParams>() 
+    		{
+		        public MineParams createFromParcel(Parcel in) {
+		            return new MineParams(in);
+        }
+
+				@Override
+				public MineParams[] newArray(int size) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+    };
+	
 }

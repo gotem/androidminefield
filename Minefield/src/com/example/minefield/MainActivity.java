@@ -1,5 +1,7 @@
 package com.example.minefield;
 
+import java.util.Date;
+
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.ActivityManager;
@@ -9,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -96,7 +99,7 @@ public class MainActivity extends Activity {
 		
 		}
 		else
-			text ="Waiting for GPS to settle, don't move yet!";
+			text ="Waiting for GPS to settle!";
 		((android.widget.TextView)findViewById(R.id.gameView)).setText(text);
 	}
 	
@@ -128,11 +131,30 @@ public class MainActivity extends Activity {
 		else
 		{
 			Intent intent = new Intent(this, GameService.class);
+			MineParams params = new MineParams(getApplicationContext());
+			intent.putExtra("param", params);
+			//startMonitoring(params);
 			startService(intent);
 			((android.widget.Button)view).setText("Stop");
 		}
 	}
 	
+	/*public void startMonitoring(MineParams params)
+	{
+		Listener listener = new Listener(params);
+		LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		
+		
+		Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		if(loc!=null)
+		{
+			if(loc.getTime() > (new Date().getTime() - 1000*2*60)) //2Minutes back
+			{
+				listener.Initialize(loc);
+			}
+		}
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
+	}*/
 	
 
 }

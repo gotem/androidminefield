@@ -25,6 +25,7 @@ public class GameService extends IntentService {
 	private Integer prizes;
 	private Boolean initialized;
 	private Listener listener;
+	MineParams params;
 	
 	
 	public GameService() {
@@ -38,6 +39,7 @@ public class GameService extends IntentService {
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		startMonitoring();
 	   handler = new Handler();
 	   broadcastintent = new Intent(BROADCAST_ACTION);
 	   handler.removeCallbacks(UpdateStatus);
@@ -59,15 +61,15 @@ public class GameService extends IntentService {
 			PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 			notification.setLatestEventInfo(this, getText(R.string.app_name),
 			        getText(R.string.hello_world), pendingIntent);
+			params = (MineParams) intent.getParcelableExtra("param");
 			startForeground(ONGOING_NOTIFICATION_ID, notification);
-			startMonitoring();
 			Boolean stopping=false;
 	      while(!stopping)
 	      {
 	    	  synchronized (this) {
 
 	              try {
-	                  wait(100000);
+	                  wait(5000);
 	              } catch (Exception e) {
 	              }
 	    	  }
@@ -81,6 +83,7 @@ public class GameService extends IntentService {
 			/*Criteria criteria = new Criteria();
 			criteria.setAccuracy(Criteria.ACCURACY_FINE);
 			locationManager.requestLocationUpdates(0L,0f,criteria,listener,null);*/
+			
 			Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 			if(loc!=null)
 			{
