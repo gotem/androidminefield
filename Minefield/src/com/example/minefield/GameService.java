@@ -4,6 +4,7 @@ import java.util.Date;
 
 import android.app.IntentService;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -11,6 +12,8 @@ import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.widget.Toast;
@@ -34,11 +37,14 @@ public class GameService extends IntentService {
 		traps = 0;
 		prizes = 0;
 		initialized = false;
+		traps = new Integer(0);
+		prizes = new Integer(0);
 	}
 
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		params = (MineParams) intent.getParcelableExtra("param");
 		startMonitoring();
 	   handler = new Handler();
 	   broadcastintent = new Intent(BROADCAST_ACTION);
@@ -55,14 +61,13 @@ public class GameService extends IntentService {
 	  protected void onHandleIntent(Intent intent) {
 		  
 		  
-		  Notification notification = new Notification(R.drawable.ic_launcher, getText(R.string.app_name),
+		  /*Notification notification = new Notification(R.drawable.ic_launcher, getText(R.string.app_name),
 			        System.currentTimeMillis());
 			Intent notificationIntent = new Intent(this, MainActivity.class);
 			PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 			notification.setLatestEventInfo(this, getText(R.string.app_name),
-			        getText(R.string.hello_world), pendingIntent);
-			params = (MineParams) intent.getParcelableExtra("param");
-			startForeground(ONGOING_NOTIFICATION_ID, notification);
+			        "Starting", pendingIntent);*/
+			startForeground(ONGOING_NOTIFICATION_ID, getMyActivityNotification("Starting..."));
 			Boolean stopping=false;
 	      while(!stopping)
 	      {
@@ -75,6 +80,20 @@ public class GameService extends IntentService {
 	    	  }
 	      }
 	  }
+	  
+	  private Notification getMyActivityNotification(String text){
+	        // The PendingIntent to launch our activity if the user selects
+	        // this notification
+	        CharSequence title = getText(R.string.app_name);
+	        PendingIntent contentIntent = PendingIntent.getActivity(this,
+	                0, new Intent(this, MainActivity.class), 0);
+	        //Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+	        return new Notification.Builder(this)
+	                .setContentTitle(title)
+	                .setContentText(text)
+	                .setSmallIcon(R.drawable.ic_launcher)
+	                .setContentIntent(contentIntent).setDefaults(Notification.DEFAULT_ALL).getNotification();     
+	}
 	  
 		public void startMonitoring()
 		{
@@ -95,19 +114,41 @@ public class GameService extends IntentService {
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
 		}
 		
+		public void UpdateNotification(String text)
+		{
+            Notification notification = getMyActivityNotification(text);
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(ONGOING_NOTIFICATION_ID, notification);
+		}
+		
 		public void Warn(Integer value)
 		{
-			
+			String object="";
+			if(value==Mine.PrizeValue)
+				object="Prize";
+			else
+				object = "Mine";
+			UpdateNotification("You are near a "+object);
 		}
 
 		public void Trigger(Integer value)
 		{
-			
+			if(value == Mine.MineValue)
+			{
+				traps++;
+				UpdateNotification("Trap Triggered!");
+			}
+			else
+			{
+				prizes++;
+				UpdateNotification("You have found a prize!");
+			}
 		}
 		
 		public void SetInitialized()
 		{
 			initialized = true;
+			UpdateNotification("Game Started!");
 		}
 		
 		private Runnable UpdateStatus = new Runnable() {
@@ -121,7 +162,7 @@ public class GameService extends IntentService {
 	    {
 	        broadcastintent.putExtra("traps", traps);
 	        broadcastintent.putExtra("prizes", prizes);
-	        broadcastintent.putExtra("initializes", initialized);
+	        broadcastintent.putExtra("initialized", initialized);
 	        sendBroadcast(broadcastintent);
 	    }
 }

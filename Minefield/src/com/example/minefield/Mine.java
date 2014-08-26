@@ -10,6 +10,8 @@ public class Mine {
 	Boolean isNear;
 	Integer value;
 	Location location;
+	public static int PrizeValue = 0;
+	public static int MineValue = 1;
 	private static int EarthRadius = 6371000;
 	private static int latmeters = 110852;
 	private static int longmeters = 96486;

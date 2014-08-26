@@ -65,11 +65,11 @@ public class Listener implements LocationListener
     	prizes = new ArrayList<Mine>();
     	for(int i = 0;i<params.numberMines;i++)
     	{
-    		mines.add( new Mine(1,params,location)); 		
+    		mines.add( new Mine(Mine.MineValue,params,location)); 		
     	}
     	for(int i = 0;i<params.numberPrizes;i++)
     	{
-    		prizes.add( new Mine(0,params,location));
+    		prizes.add( new Mine(Mine.PrizeValue,params,location));
     	}
     	service.SetInitialized();
     	/*service.handler.post(new Runnable() {

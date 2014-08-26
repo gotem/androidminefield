@@ -94,8 +94,8 @@ public class MainActivity extends Activity {
 		if(intent.getBooleanExtra("initialized", false))
 		{
 			text ="Game Initialized\n";
-			text += intent.getStringExtra("traps")+" traps triggered";
-			text += intent.getStringExtra("traps")+" prizes found";
+			text += intent.getIntExtra("traps",0)+" traps triggered\n";
+			text += intent.getIntExtra("prizes",0)+" prizes found";
 		
 		}
 		else
