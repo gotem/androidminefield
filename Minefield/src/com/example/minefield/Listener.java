@@ -72,6 +72,10 @@ public class Listener implements LocationListener
     		prizes.add( new Mine(Mine.PrizeValue,params,location));
     	}
     	service.SetInitialized();
+    	if(params.debug)
+    	{
+    		service.debug(location, mines, prizes);
+    	}
     	/*service.handler.post(new Runnable() {
     		   @Override
     		   public void run() {

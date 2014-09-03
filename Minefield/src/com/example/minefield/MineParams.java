@@ -13,6 +13,7 @@ public class MineParams implements Parcelable{
 	float warnRadius;
 	Integer numberMines;
 	Integer numberPrizes;
+	Boolean debug;
 	
 	public MineParams(Context ctx) {
 		// TODO Auto-generated constructor stub
@@ -22,6 +23,7 @@ public class MineParams implements Parcelable{
 		warnRadius = Float.parseFloat(sharedPref.getString("warnRadius", "10"));
 		numberMines = Integer.parseInt(sharedPref.getString("numberMines", "1"));
 		numberPrizes = Integer.parseInt(sharedPref.getString("numberPrizes", "0"));
+		debug = sharedPref.getBoolean("debug",false);
 	}
 
 	@Override
@@ -38,6 +40,7 @@ public class MineParams implements Parcelable{
 		dest.writeFloat(warnRadius);
 		dest.writeInt(numberMines);
 		dest.writeInt(numberPrizes);
+		dest.writeInt(debug?1:0);
 	}
 
 	public MineParams(Parcel in)
@@ -47,6 +50,7 @@ public class MineParams implements Parcelable{
 		warnRadius = in.readFloat();
 		numberMines = in.readInt();
 		numberPrizes = in.readInt();
+		debug = (in.readInt()==1);
 
 	}
 	

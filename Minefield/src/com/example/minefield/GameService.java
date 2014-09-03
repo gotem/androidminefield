@@ -1,5 +1,6 @@
 package com.example.minefield;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import android.app.IntentService;
@@ -28,6 +29,7 @@ public class GameService extends IntentService {
 	private Integer prizes;
 	private Boolean initialized;
 	private Listener listener;
+	private String debug;
 	MineParams params;
 	
 	
@@ -39,6 +41,7 @@ public class GameService extends IntentService {
 		initialized = false;
 		traps = new Integer(0);
 		prizes = new Integer(0);
+		debug="";
 	}
 
 	
@@ -157,12 +160,28 @@ public class GameService extends IntentService {
 	            handler.postDelayed(this, 5000); // 5 seconds
 	        }
 	    };  
+	    
+	    public void debug(Location location,ArrayList<Mine> mines,ArrayList<Mine> prizes)
+	    {
+	    	String sentence="";
+	    	sentence += "Center: "+location.getLatitude()+", "+location.getLongitude()+"\n";
+	    	for (Mine mine : mines)
+	    	{
+	    		sentence += "Mine: "+mine.location.getLatitude()+", "+mine.location.getLongitude()+"\n";
+	    	}
+	    	for (Mine mine : prizes)
+	    	{
+	    		sentence += "Prize: "+mine.location.getLatitude()+", "+mine.location.getLongitude()+"\n";
+	    	}
+	    	debug=sentence;
+	    }
 		
 	    public void Status()
 	    {
 	        broadcastintent.putExtra("traps", traps);
 	        broadcastintent.putExtra("prizes", prizes);
 	        broadcastintent.putExtra("initialized", initialized);
+	        broadcastintent.putExtra("debug", debug);
 	        sendBroadcast(broadcastintent);
 	    }
 }

@@ -95,7 +95,8 @@ public class MainActivity extends Activity {
 		{
 			text ="Game Initialized\n";
 			text += intent.getIntExtra("traps",0)+" traps triggered\n";
-			text += intent.getIntExtra("prizes",0)+" prizes found";
+			text += intent.getIntExtra("prizes",0)+" prizes found\n";
+			text += "debug:"+intent.getStringExtra("debug")+"\n";
 		
 		}
 		else
