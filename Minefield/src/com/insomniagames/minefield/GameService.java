@@ -185,7 +185,8 @@ public class GameService extends IntentService {
 	        broadcastintent.putExtra("traps", traps);
 	        broadcastintent.putExtra("prizes", prizes);
 	        broadcastintent.putExtra("initialized", initialized);
-	        broadcastintent.putExtra("debug", debug+" "+debugupdate);
+	        broadcastintent.putExtra("debug", debug);
+	        broadcastintent.putExtra("debugextra", debugupdate);
 	        sendBroadcast(broadcastintent);
 	    }
 }

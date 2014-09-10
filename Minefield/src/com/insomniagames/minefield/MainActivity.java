@@ -93,7 +93,11 @@ public class MainActivity extends Activity {
 			text ="<b>Game Initialized</b><br>";
 			text += intent.getIntExtra("traps",0)+" traps triggered<br>";
 			text += intent.getIntExtra("prizes",0)+" prizes found<br>";
-			text += "<a href=\""+intent.getStringExtra("debug")+"\">link</a>";
+			if(!intent.getStringExtra("debug").isEmpty())
+			{
+				text += "<a href=\""+intent.getStringExtra("debug")+"\">link</a>";
+				text += "<br>"+intent.getStringExtra("debugextra");
+			}
 		
 		}
 		else
