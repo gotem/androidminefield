@@ -25,6 +25,7 @@ public class Listener implements LocationListener
 	
     public void onLocationChanged(Location location) {
 		Log.d("MineField","location changed");
+		Double mindistance = 2000.0;
     	if(!initialized)
     	{
     		initialized = true;
@@ -33,6 +34,8 @@ public class Listener implements LocationListener
     	for (Mine mine : mines)
     	{
     		Double distance = mine.DistanceTo(location);
+    		if(distance<mindistance)
+    			mindistance = distance;
     	    if (distance <= params.warnRadius && mine.isNear == false )
     	    {
     	    	//warn is near
@@ -45,7 +48,10 @@ public class Listener implements LocationListener
     	}
     	for (Mine mine : prizes)
     	{
+    		
     		Double distance = mine.DistanceTo(location);
+    		if(distance<mindistance)
+    			mindistance = distance;
     	    if (distance <= params.warnRadius && mine.isNear == false )
     	    {
     	    	Warn(mine);
@@ -54,6 +60,10 @@ public class Listener implements LocationListener
     	    {
     	    	Trigger(mine);
     	    }
+    	}
+    	if (params.debug)
+    	{
+    		service.debugUpdate(location,mindistance);
     	}
     }
 

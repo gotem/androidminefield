@@ -25,6 +25,7 @@ public class GameService extends IntentService {
 	private Boolean initialized;
 	private Listener listener;
 	private String debug;
+	private String debugupdate;
 	MineParams params;
 	
 	
@@ -37,6 +38,7 @@ public class GameService extends IntentService {
 		traps = Integer.valueOf(0);
 		prizes = Integer.valueOf(0);
 		debug="";
+		debugupdate="";
 	}
 
 	
@@ -142,6 +144,11 @@ public class GameService extends IntentService {
 				UpdateNotification("You have found a prize!");
 			}
 		}
+		public void debugUpdate(Location location,Double distance)
+		{
+			debugupdate = "current location: "+location.getLatitude()+","+location.getLongitude()+"<br>";
+			debugupdate += " closest object at "+distance+" meters <br>";
+		}
 		
 		public void SetInitialized()
 		{
@@ -158,8 +165,8 @@ public class GameService extends IntentService {
 	    
 	    public void debug(Location location,ArrayList<Mine> mines,ArrayList<Mine> prizes)
 	    {
+	    	String sentence="http://maps.googleapis.com/maps/api/staticmap?size=800x800";
 	    	DecimalFormat frmt = new DecimalFormat("#.0#####");
-	    	String sentence="http://maps.google.com/maps/api/staticmap?size=512x512";
 	    	sentence +="&markers=color:blue|label:C|"+frmt.format(location.getLatitude())+","+frmt.format(location.getLongitude());
 	    	for (Mine mine : mines)
 	    	{
@@ -169,6 +176,7 @@ public class GameService extends IntentService {
 	    	{
 	    		sentence += "&markers=color:green|label:P|"+frmt.format(mine.location.getLatitude())+","+frmt.format(mine.location.getLongitude());
 	    	}
+	    	sentence +="&key=AIzaSyBSayrSS8eOrr3xoPcFIsmi03gcIczDg_o";
 	    	debug=sentence;
 	    }
 		
@@ -177,7 +185,7 @@ public class GameService extends IntentService {
 	        broadcastintent.putExtra("traps", traps);
 	        broadcastintent.putExtra("prizes", prizes);
 	        broadcastintent.putExtra("initialized", initialized);
-	        broadcastintent.putExtra("debug", debug);
+	        broadcastintent.putExtra("debug", debug+" "+debugupdate);
 	        sendBroadcast(broadcastintent);
 	    }
 }
