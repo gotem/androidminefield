@@ -8,9 +8,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
@@ -22,6 +25,9 @@ public class MainActivity extends Activity {
 			((android.widget.Button)findViewById(R.id.startbutton)).setText("Stop");
 		else
 			((android.widget.Button)findViewById(R.id.startbutton)).setText("Start");
+		TextView t2 = (TextView) findViewById(R.id.gameView);
+	    t2.setMovementMethod(LinkMovementMethod.getInstance());
+	    t2.setClickable(true);
 		if (savedInstanceState == null) {
 			/*getFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();*/
@@ -84,15 +90,15 @@ public class MainActivity extends Activity {
 		String text="";
 		if(intent.getBooleanExtra("initialized", false))
 		{
-			text ="Game Initialized\n";
-			text += intent.getIntExtra("traps",0)+" traps triggered\n";
-			text += intent.getIntExtra("prizes",0)+" prizes found\n";
-			text += "debug:"+intent.getStringExtra("debug")+"\n";
+			text ="<b>Game Initialized</b><br>";
+			text += intent.getIntExtra("traps",0)+" traps triggered<br>";
+			text += intent.getIntExtra("prizes",0)+" prizes found<br>";
+			text += "<a href=\""+intent.getStringExtra("debug")+"\">link</a>";
 		
 		}
 		else
 			text ="Waiting for GPS to settle!";
-		((android.widget.TextView)findViewById(R.id.gameView)).setText(text);
+		((android.widget.TextView)findViewById(R.id.gameView)).setText(Html.fromHtml(text));
 	}
 	
 	//isMyServiceRunning(GameService.class)

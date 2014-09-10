@@ -1,5 +1,6 @@
 package com.insomniagames.minefield;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -157,15 +158,16 @@ public class GameService extends IntentService {
 	    
 	    public void debug(Location location,ArrayList<Mine> mines,ArrayList<Mine> prizes)
 	    {
+	    	DecimalFormat frmt = new DecimalFormat("#.0#####");
 	    	String sentence="http://maps.google.com/maps/api/staticmap?size=512x512";
-	    	sentence +="&markers=color:blue|label:C|"+location.getLatitude()+","+location.getLongitude();
+	    	sentence +="&markers=color:blue|label:C|"+frmt.format(location.getLatitude())+","+frmt.format(location.getLongitude());
 	    	for (Mine mine : mines)
 	    	{
-	    		sentence += "&markers=color:red|label:M|"+mine.location.getLatitude()+","+mine.location.getLongitude();
+	    		sentence += "&markers=color:red|label:M|"+frmt.format(mine.location.getLatitude())+","+frmt.format(mine.location.getLongitude());
 	    	}
 	    	for (Mine mine : prizes)
 	    	{
-	    		sentence += "&markers=color:green|label:P|"+mine.location.getLatitude()+","+mine.location.getLongitude();
+	    		sentence += "&markers=color:green|label:P|"+frmt.format(mine.location.getLatitude())+","+frmt.format(mine.location.getLongitude());
 	    	}
 	    	debug=sentence;
 	    }
