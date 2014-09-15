@@ -12,7 +12,6 @@ public class Mine {
 	Location location;
 	public static int PrizeValue = 0;
 	public static int MineValue = 1;
-	private static int EarthRadius = 6371000;
 	private static int latmeters = 110852;
 	private static int longmeters = 96486;
 	
@@ -32,8 +31,8 @@ public class Mine {
 	
 	public Double DistanceTo(Location p_location)
 	{
-		Double p1 = (p_location.getLongitude() - location.getLongitude()) * Math.cos ( 0.5*(p_location.getLatitude()+location.getLatitude()) ); //convert lat/lon to radians
-		Double	p2 = (p_location.getLatitude() - location.getLatitude());
-		return EarthRadius * Math.sqrt( p1*p1 + p2*p2);
+		Double latdiff = Math.abs(p_location.getLatitude() - location.getLatitude())*latmeters;
+		Double longdiff = Math.abs(p_location.getLongitude() - location.getLongitude())*longmeters;
+		return Math.sqrt((latdiff *latdiff ) + (longdiff*longdiff));
 	}
 };
