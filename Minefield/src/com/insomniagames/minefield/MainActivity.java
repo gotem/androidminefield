@@ -140,23 +140,6 @@ public class MainActivity extends Activity {
 			((android.widget.Button)view).setText("Stop");
 		}
 	}
-	
-	/*public void startMonitoring(MineParams params)
-	{
-		Listener listener = new Listener(params);
-		LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		
-		
-		Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		if(loc!=null)
-		{
-			if(loc.getTime() > (new Date().getTime() - 1000*2*60)) //2Minutes back
-			{
-				listener.Initialize(loc);
-			}
-		}
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
-	}*/
-	
 
 }

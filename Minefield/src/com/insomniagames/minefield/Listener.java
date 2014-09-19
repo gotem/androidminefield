@@ -85,12 +85,6 @@ public class Listener implements LocationListener
     	{
     		service.debug(location, mines, prizes);
     	}
-    	/*service.handler.post(new Runnable() {
-    		   @Override
-    		   public void run() {
-    			   Toast.makeText(service.getApplicationContext(), "Location Initialized", Toast.LENGTH_SHORT).show();
-    		   }
-    		});*/
     }
     
     private void Warn(Mine mine)

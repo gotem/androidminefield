@@ -48,8 +48,6 @@ public class GameService extends IntentService {
 		startMonitoring();
 	   handler = new Handler();
 	   broadcastintent = new Intent(BROADCAST_ACTION);
-	   handler.removeCallbacks(UpdateStatus);
-       handler.postDelayed(UpdateStatus, 1000); // 1 second   
 	   return super.onStartCommand(intent, flags, startId);
 	}
 	/**
@@ -60,13 +58,7 @@ public class GameService extends IntentService {
 	  @Override
 	  protected void onHandleIntent(Intent intent) {
 		  
-		  
-		  /*Notification notification = new Notification(R.drawable.ic_launcher, getText(R.string.app_name),
-			        System.currentTimeMillis());
-			Intent notificationIntent = new Intent(this, MainActivity.class);
-			PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-			notification.setLatestEventInfo(this, getText(R.string.app_name),
-			        "Starting", pendingIntent);*/
+
 			startForeground(ONGOING_NOTIFICATION_ID, getMyActivityNotification("Starting..."));
 			Boolean stopping=false;
 	      while(!stopping)
@@ -75,19 +67,20 @@ public class GameService extends IntentService {
 
 	              try {
 	                  wait(5000);
+	                  Status();
 	              } catch (Exception e) {
 	              }
 	    	  }
 	      }
 	  }
 	  
-	  private Notification getMyActivityNotification(String text){
+	  @SuppressWarnings("deprecation")
+	private Notification getMyActivityNotification(String text){
 	        // The PendingIntent to launch our activity if the user selects
 	        // this notification
 	        CharSequence title = getText(R.string.app_name);
 	        PendingIntent contentIntent = PendingIntent.getActivity(this,
 	                0, new Intent(this, MainActivity.class), 0);
-	        //Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 	        return new Notification.Builder(this)
 	                .setContentTitle(title)
 	                .setContentText(text)
@@ -99,9 +92,6 @@ public class GameService extends IntentService {
 		{
 			listener = new Listener(this);
 			LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-			/*Criteria criteria = new Criteria();
-			criteria.setAccuracy(Criteria.ACCURACY_FINE);
-			locationManager.requestLocationUpdates(0L,0f,criteria,listener,null);*/
 			
 			Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 			if(loc!=null)
@@ -146,8 +136,11 @@ public class GameService extends IntentService {
 		}
 		public void debugUpdate(Location location,Double distance)
 		{
+			DecimalFormat frmt = new DecimalFormat("#.0#####");
 			debugupdate = "current location: "+location.getLatitude()+","+location.getLongitude()+"<br>";
-			debugupdate += " closest object at "+distance+" meters <br>";
+			debugupdate += " closest object at "+frmt.format(distance)+" meters <br>";
+			debugupdate += "<a href='http://maps.googleapis.com/maps/api/staticmap?size=800x800&markers=color:blue|label:C|"+frmt.format(location.getLatitude())+","+frmt.format(location.getLongitude())
+					+"&key=AIzaSyBSayrSS8eOrr3xoPcFIsmi03gcIczDg_o'>current location</a><br>";
 		}
 		
 		public void SetInitialized()
@@ -156,12 +149,6 @@ public class GameService extends IntentService {
 			UpdateNotification("Game Started!");
 		}
 		
-		private Runnable UpdateStatus = new Runnable() {
-	        public void run() {
-	            Status();            
-	            handler.postDelayed(this, 5000); // 5 seconds
-	        }
-	    };  
 	    
 	    public void debug(Location location,ArrayList<Mine> mines,ArrayList<Mine> prizes)
 	    {
